@@ -26,6 +26,7 @@ class Motor(object):
         self.PWMB = GPIO.PWM(self.ENB, 500)
         self.PWMA.start(self.speed)
         self.PWMB.start(self.speed)
+        self.stop()
 
     def forward(self):
         GPIO.output(self.IN1, GPIO.HIGH)

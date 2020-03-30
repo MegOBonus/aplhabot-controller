@@ -1,57 +1,79 @@
+import sys
+import socket
+import selectors
+import types
 from components import Motor
-from pynput import keyboard
 
 motor = Motor()
 speed = 50
+sel = selectors.DefaultSelector()
 
 
-def handle_click(key):
+def handle_msg(key):
     print(key)
-    if key == 'w' or key == keyboard.Key.up:
-        print('forward')
+    if key == b'forward':
         motor.forward()
-    if key == 's' or key == keyboard.Key.down:
-        print('backward')
+    if key == b'backward':
         motor.backward()
-    if key == 'a' or key == keyboard.Key.left:
-        print('left')
+    if key == b'left':
         motor.left()
-    if key == 'd' or key == keyboard.Key.right:
-        print('right')
+    if key == b'right':
         motor.right()
-    if key == '+':
-        print('speed up')
+    if key == b'speed up':
         motor.speed_up()
-    if key == '-':
-        print('speed down')
+    if key == b'speed down':
         motor.speed_down()
+    if key == b'stop':
+        motor.stop()
 
 
-def on_press(key):
-    try:
-        # print('alphanumeric key {0} pressed\n'.format(
-        #     key.char))
-        handle_click(key.char)
-    except AttributeError:
-        # print('special key {0} pressed\n'.format(
-        #     key))
-        handle_click(key)
+def accept_wrapper(sock):
+    conn, addr = sock.accept()  # Should be ready to read
+    print("accepted connection from", addr)
+    conn.setblocking(False)
+    data = types.SimpleNamespace(addr=addr, inb=b"", outb=b"")
+    events = selectors.EVENT_READ | selectors.EVENT_WRITE
+    sel.register(conn, events, data=data)
 
 
-def on_release(key):
-    motor.stop()
+def service_connection(key, mask):
+    sock = key.fileobj
+    data = key.data
+    if mask & selectors.EVENT_READ:
+        recv_data = sock.recv(1024)  # Should be ready to read
+        if recv_data:
+            data.outb += recv_data
+        else:
+            print("closing connection to", data.addr)
+            sel.unregister(sock)
+            sock.close()
+    if mask & selectors.EVENT_WRITE:
+        if data.outb:
+            handle_msg(data.outb)
+            data.outb = b''
 
-    if key == keyboard.Key.esc:
-        # Stop listener
-        return False
 
+if len(sys.argv) != 3:
+    print("usage:", sys.argv[0], "<host> <port>")
+    sys.exit(1)
 
-with keyboard.Listener(
-        on_press=on_press,
-        on_release=on_release) as listener:
-    listener.join()
+host, port = sys.argv[1], int(sys.argv[2])
+lsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+lsock.bind((host, port))
+lsock.listen()
+print("listening on", (host, port))
+lsock.setblocking(False)
+sel.register(lsock, selectors.EVENT_READ, data=None)
 
-listener = keyboard.Listener(
-    on_press=on_press,
-    on_release=on_release)
-listener.start()
+try:
+    while True:
+        events = sel.select(timeout=None)
+        for key, mask in events:
+            if key.data is None:
+                accept_wrapper(key.fileobj)
+            else:
+                service_connection(key, mask)
+except KeyboardInterrupt:
+    print("caught keyboard interrupt, exiting")
+finally:
+    sel.close()
