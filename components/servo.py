@@ -9,14 +9,14 @@ class Servo(object):
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.pin, GPIO.OUT)
         self.servo = GPIO.PWM(self.pin, 50)
-        self.angle_step = 10  # degrees
+        self.angle_step = 20  # degrees
         self.servo_angle = 90
         self.servo.start(0)
         self.change_angle(self.servo_angle)
 
     def change_angle(self, angle):
         self.servo.ChangeDutyCycle(2+(angle/18))
-        time.sleep(0.5)
+        time.sleep(0.1)
         self.servo.ChangeDutyCycle(0)
         print(angle)
 
