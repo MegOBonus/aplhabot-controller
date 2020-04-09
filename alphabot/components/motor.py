@@ -3,15 +3,15 @@ import RPi.GPIO as GPIO
 
 class Motor(object):
 
-    def __init__(self, in1=12, in2=13, ena=6, in3=20, in4=21, enb=26):
+    def __init__(self, in1=12, in2=13, ena=6, in3=20, in4=21, enb=26, speed=50, speed_step=10):
         self.IN1 = in1
         self.IN2 = in2
         self.IN3 = in3
         self.IN4 = in4
         self.ENA = ena
         self.ENB = enb
-        self.speed = 50
-        self.speed_step = 10
+        self.speed = speed
+        self.speed_step = speed_step
 
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
@@ -21,12 +21,10 @@ class Motor(object):
         GPIO.setup(self.IN4, GPIO.OUT)
         GPIO.setup(self.ENA, GPIO.OUT)
         GPIO.setup(self.ENB, GPIO.OUT)
-        self.forward()
         self.PWMA = GPIO.PWM(self.ENA, 500)
         self.PWMB = GPIO.PWM(self.ENB, 500)
         self.PWMA.start(self.speed)
         self.PWMB.start(self.speed)
-        self.stop()
 
     def forward(self):
         GPIO.output(self.IN1, GPIO.HIGH)
@@ -58,35 +56,16 @@ class Motor(object):
         GPIO.output(self.IN3, GPIO.LOW)
         GPIO.output(self.IN4, GPIO.LOW)
 
-    def change_speed(self, value):
+    def set_speed(self, value):
         self.PWMA.ChangeDutyCycle(value)
         self.PWMB.ChangeDutyCycle(value)
 
     def speed_up(self):
         if self.speed != 100:
             self.speed += self.speed_step
-            self.change_speed(self.speed)
+            self.set_speed(self.speed)
 
     def speed_down(self):
         if self.speed != 0:
             self.speed -= self.speed_step
-            self.change_speed(self.speed)
-    #
-    # def set_motor(self, left, right):
-    #     if (right >= 0) and (right <= 100):
-    #         GPIO.output(self.IN1, GPIO.HIGH)
-    #         GPIO.output(self.IN2, GPIO.LOW)
-    #         self.PWMA.ChangeDutyCycle(right)
-    #     elif (right < 0) and (right >= -100):
-    #         GPIO.output(self.IN1, GPIO.LOW)
-    #         GPIO.output(self.IN2, GPIO.HIGH)
-    #         self.PWMA.ChangeDutyCycle(0 - right)
-    #
-    #     if (left >= 0) and (left <= 100):
-    #         GPIO.output(self.IN3, GPIO.HIGH)
-    #         GPIO.output(self.IN4, GPIO.LOW)
-    #         self.PWMB.ChangeDutyCycle(left)
-    #     elif (left < 0) and (left >= -100):
-    #         GPIO.output(self.IN3, GPIO.LOW)
-    #         GPIO.output(self.IN4, GPIO.HIGH)
-    #         self.PWMB.ChangeDutyCycle(0 - left)
+            self.set_speed(self.speed)

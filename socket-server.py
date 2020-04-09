@@ -1,40 +1,36 @@
-import sys
 import socket
 import selectors
 import types
-from components import Motor, Servo
+from .alphabot import Alphabot
 
-motor = Motor()
-speed = 50
 sel = selectors.DefaultSelector()
-s1 = Servo(27)
-s2 = Servo(22)
+alphabot = Alphabot()
 
 
 def handle_msg(key):
     print(key)
     if key == b'forward':
-        motor.forward()
+        alphabot.go_forward()
     if key == b'backward':
-        motor.backward()
+        alphabot.go_backward()
     if key == b'left':
-        motor.left()
+        alphabot.turn_left()
     if key == b'right':
-        motor.right()
+        alphabot.turn_right()
     if key == b'speed up':
-        motor.speed_up()
+        alphabot.motor_speed_up()
     if key == b'speed down':
-        motor.speed_down()
+        alphabot.motor_speed_down()
     if key == b'stop':
-        motor.stop()
+        alphabot.stop_motor()
     if key == b'cam up':
-        s1.left()
+        alphabot.turn_camera_up()
     if key == b'cam down':
-        s1.right()
+        alphabot.turn_camera_down()
     if key == b'cam left':
-        s2.left()
+        alphabot.turn_camera_left()
     if key == b'cam right':
-        s2.right()
+        alphabot.turn_camera_right()
 
 
 def accept_wrapper(sock):
