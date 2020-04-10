@@ -7,33 +7,34 @@ print("Socket successfully created")
 port = 65432
 host_ip = '192.168.0.106'
 
-# connecting to the server
-s.connect((host_ip, port))
 
-print("connected to pi on port == ", host_ip)
+def send_msg(msg):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        sock.connect((host_ip, port))
+        sock.sendall(msg)
 
 
 def handle_click(key):
     if key == keyboard.Key.up:
-        s.send(b'forward')
+        send_msg(b'forward')
     if key == keyboard.Key.down:
-        s.send(b'backward')
+        send_msg(b'backward')
     if key == keyboard.Key.left:
-        s.send(b'left')
+        send_msg(b'left')
     if key == keyboard.Key.right:
-        s.send(b'right')
+        send_msg(b'right')
     if key == '+':
-        s.send(b'speed up')
+        send_msg(b'speed up')
     if key == '-':
-        s.send(b'speed down')
+        send_msg(b'speed down')
     if key == 'a':
-        s.send(b'cam right')
+        send_msg(b'cam right')
     if key == 'd':
-        s.send(b'cam left')
+        send_msg(b'cam left')
     if key == 's':
-        s.send(b'cam down')
+        send_msg(b'cam down')
     if key == 'w':
-        s.send(b'cam up')
+        send_msg(b'cam up')
 
 
 def on_press(key):
@@ -44,7 +45,7 @@ def on_press(key):
 
 
 def on_release(key):
-    s.send(b'stop')
+    send_msg(b'stop')
     if key == keyboard.Key.esc:
         return False
 
