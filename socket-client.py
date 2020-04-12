@@ -5,7 +5,7 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 print("Socket successfully created")
 
 port = 65432
-host_ip = '192.168.0.106'
+host_ip = '192.168.0.101'
 
 
 def send_msg(msg):
