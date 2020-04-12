@@ -1,4 +1,4 @@
-from .components import Motor, Servo
+from alphabot.components import Motor, Servo
 
 
 class Alphabot(object):
@@ -19,7 +19,7 @@ class Alphabot(object):
         self.motor.backward()
 
     def turn_left(self):
-        self.motor.right()
+        self.motor.left()
 
     def turn_right(self):
         self.motor.right()
