@@ -1,4 +1,5 @@
 import RPi.GPIO as GPIO
+import logging
 
 
 class Motor(object):
@@ -25,40 +26,48 @@ class Motor(object):
         self.PWMB = GPIO.PWM(self.ENB, 500)
         self.PWMA.start(self.speed)
         self.PWMB.start(self.speed)
+        self.logger = logging.getLogger('alphabot-logger')
+        self.logger.debug('Motor ready')
 
     def forward(self):
         GPIO.output(self.IN1, GPIO.HIGH)
         GPIO.output(self.IN2, GPIO.LOW)
         GPIO.output(self.IN3, GPIO.LOW)
         GPIO.output(self.IN4, GPIO.HIGH)
+        self.logger.debug('Forward')
 
     def stop(self):
         GPIO.output(self.IN1, GPIO.LOW)
         GPIO.output(self.IN2, GPIO.LOW)
         GPIO.output(self.IN3, GPIO.LOW)
         GPIO.output(self.IN4, GPIO.LOW)
+        self.logger.debug('Stop')
 
     def backward(self):
         GPIO.output(self.IN1, GPIO.LOW)
         GPIO.output(self.IN2, GPIO.HIGH)
         GPIO.output(self.IN3, GPIO.HIGH)
         GPIO.output(self.IN4, GPIO.LOW)
+        self.logger.debug('Backward')
 
     def left(self):
         GPIO.output(self.IN1, GPIO.LOW)
         GPIO.output(self.IN2, GPIO.LOW)
         GPIO.output(self.IN3, GPIO.LOW)
         GPIO.output(self.IN4, GPIO.HIGH)
+        self.logger.debug('Left')
 
     def right(self):
         GPIO.output(self.IN1, GPIO.HIGH)
         GPIO.output(self.IN2, GPIO.LOW)
         GPIO.output(self.IN3, GPIO.LOW)
         GPIO.output(self.IN4, GPIO.LOW)
+        self.logger.debug('Right')
 
     def set_speed(self, value):
         self.PWMA.ChangeDutyCycle(value)
         self.PWMB.ChangeDutyCycle(value)
+        self.logger.debug('Current speed = {}'.format(value))
 
     def speed_up(self):
         if self.speed != 100:

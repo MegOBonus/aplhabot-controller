@@ -1,5 +1,10 @@
 import socketserver
+import logging
 from alphabot import Alphabot
+
+logger = logging.getLogger('alphabot-logger')
+logger.addHandler(logging.StreamHandler())
+logger.setLevel(logging.DEBUG)
 
 
 class Server(socketserver.ThreadingMixIn, socketserver.TCPServer):
@@ -40,13 +45,12 @@ class Handler(socketserver.StreamRequestHandler):
     def handle(self):
         self.data = self.request.recv(1024).strip()
         self.handle_command(self.data)
-        print(self.data)
+        logger.debug('Message received {}'.format(str(self.data)))
 
 
 if __name__ == "__main__":
     HOST, PORT = '192.168.0.101', 65432
-
-    print('Server started')
+    logger.debug('Server started on {}:{}'.format(HOST, PORT))
 
     bot = Alphabot()
     server = Server((HOST, PORT), Handler, bot)
