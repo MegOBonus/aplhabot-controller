@@ -1,11 +1,12 @@
 import socket
 from pynput import keyboard
+from config import socket_server, commads
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 print("Socket successfully created")
 
-port = 65432
-host_ip = '192.168.0.101'
+port = socket_server["port"]
+host_ip = socket_server["host"]
 
 
 def send_msg(msg):
@@ -16,25 +17,25 @@ def send_msg(msg):
 
 def handle_click(key):
     if key == keyboard.Key.up:
-        send_msg(b'forward')
+        send_msg(bytes(commads["motor"]["forward"]))
     if key == keyboard.Key.down:
-        send_msg(b'backward')
+        send_msg(bytes(commads["motor"]["backward"]))
     if key == keyboard.Key.left:
-        send_msg(b'left')
+        send_msg(bytes(commads["motor"]["left"]))
     if key == keyboard.Key.right:
-        send_msg(b'right')
+        send_msg(bytes(commads["motor"]["right"]))
     if key == '+':
-        send_msg(b'speed up')
+        send_msg(bytes(commads["motor"]["speed"]["up"]))
     if key == '-':
-        send_msg(b'speed down')
+        send_msg(bytes(commads["motor"]["speed"]["down"]))
     if key == 'a':
-        send_msg(b'cam right')
+        send_msg(bytes(commads["camera"]["right"]))
     if key == 'd':
-        send_msg(b'cam left')
+        send_msg(bytes(commads["camera"]["left"]))
     if key == 's':
-        send_msg(b'cam down')
+        send_msg(bytes(commads["camera"]["down"]))
     if key == 'w':
-        send_msg(b'cam up')
+        send_msg(bytes(commads["camera"]["up"]))
 
 
 def on_press(key):
@@ -45,7 +46,7 @@ def on_press(key):
 
 
 def on_release(key):
-    send_msg(b'stop')
+    send_msg(bytes(commads["motor"]["stop"]))
     if key == keyboard.Key.esc:
         return False
 

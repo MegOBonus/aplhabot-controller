@@ -4,6 +4,7 @@ import logging
 import socketserver
 from threading import Condition
 from http import server
+from config import camera_stream
 
 
 class StreamingOutput(object):
@@ -24,7 +25,7 @@ class StreamingOutput(object):
 
 class StreamingHandler(server.BaseHTTPRequestHandler):
     def do_GET(self):
-        if self.path == '/stream.mjpg':
+        if self.path == camera_stream["path"]:
             self.send_response(200)
             self.send_header('Age', 0)
             self.send_header('Cache-Control', 'no-cache, private')
@@ -60,7 +61,7 @@ with picamera.PiCamera(resolution='640x480', framerate=24) as camera:
     output = StreamingOutput()
     camera.start_recording(output, format='mjpeg')
     try:
-        address = ('', 8000)
+        address = (camera_stream["host"], camera_stream["port"])
         server = StreamingServer(address, StreamingHandler)
         server.serve_forever()
     finally:

@@ -1,0 +1,19 @@
+{
+    "motor": {
+        "forward": "Forward",
+        "backward": "Backward",
+        "left": "Left",
+        "right": "Right",
+        "speed":{
+            "up": "Speed up",
+            "down": "Speed down"
+        },
+        "stop": "Stop"
+    },
+    "camera":{
+        "up": "Camera up",
+        "down": "Camera down",
+        "left": "Camera left",
+        "right": "Camera right"
+    }
+}

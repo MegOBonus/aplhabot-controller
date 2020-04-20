@@ -44,4 +44,3 @@ class Alphabot(object):
 
     def turn_camera_right(self):
         self.horizontal_servo.right()
-

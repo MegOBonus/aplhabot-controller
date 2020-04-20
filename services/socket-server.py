@@ -1,10 +1,6 @@
 import socketserver
-import logging
 from alphabot import Alphabot
-
-logger = logging.getLogger('alphabot-logger')
-logger.addHandler(logging.StreamHandler())
-logger.setLevel(logging.DEBUG)
+from config import socket_server, logger, commads
 
 
 class Server(socketserver.ThreadingMixIn, socketserver.TCPServer):
@@ -15,43 +11,43 @@ class Server(socketserver.ThreadingMixIn, socketserver.TCPServer):
 
 class Handler(socketserver.StreamRequestHandler):
     def __init__(self, request, client_address, server):
-        self.data = b''
+        self.data = ''
         super().__init__(request, client_address, server)
 
     def handle_command(self, key):
-        if key == b'forward':
+        if key == commads["motor"]["forward"]:
             self.server.alphabot.go_forward()
-        if key == b'backward':
+        if key == commads["motor"]["backward"]:
             self.server.alphabot.go_backward()
-        if key == b'left':
+        if key == commads["motor"]["left"]:
             self.server.alphabot.turn_left()
-        if key == b'right':
+        if key == commads["motor"]["right"]:
             self.server.alphabot.turn_right()
-        if key == b'speed up':
+        if key == commads["motor"]["speed"]["up"]:
             self.server.alphabot.motor_speed_up()
-        if key == b'speed down':
+        if key == commads["motor"]["speed"]["down"]:
             self.server.alphabot.motor_speed_down()
-        if key == b'stop':
+        if key == commads["motor"]["stop"]:
             self.server.alphabot.stop_motor()
-        if key == b'cam up':
+        if key == commads["camera"]["up"]:
             self.server.alphabot.turn_camera_up()
-        if key == b'cam down':
+        if key == commads["camera"]["down"]:
             self.server.alphabot.turn_camera_down()
-        if key == b'cam left':
+        if key == commads["camera"]["left"]:
             self.server.alphabot.turn_camera_left()
-        if key == b'cam right':
+        if key == commads["camera"]["right"]:
             self.server.alphabot.turn_camera_right()
 
     def handle(self):
-        self.data = self.request.recv(1024).strip()
+        self.data = self.request.recv(1024).strip().decode('utf-8')
+        logger.debug('Message received {}'.format(self.data))
         self.handle_command(self.data)
-        logger.debug('Message received {}'.format(str(self.data)))
 
 
 if __name__ == "__main__":
-    HOST, PORT = '192.168.0.101', 65432
-    logger.debug('Server started on {}:{}'.format(HOST, PORT))
-
     bot = Alphabot()
-    server = Server((HOST, PORT), Handler, bot)
+
+    host, port = socket_server["host"], socket_server["port"]
+    server = Server((host, port), Handler, bot)
+    logger.debug('Server started on {}:{}'.format(host, port))
     server.serve_forever()

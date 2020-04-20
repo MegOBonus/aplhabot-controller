@@ -1,0 +1,11 @@
+{
+    "socket-server": {
+        "host": "192.168.0.101",
+        "port": 65432
+    },
+    "camera-stream":{
+        "host": "192.168.0.101",
+        "path": "/stream.mjpg",
+        "port": 8000
+    }
+}
