@@ -13,6 +13,8 @@ class Motor(object):
         self.ENB = enb
         self.speed = speed
         self.speed_step = speed_step
+        self.min_duty_cycle = 40
+        self.max_duty_cycle = 100
 
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
@@ -70,11 +72,11 @@ class Motor(object):
         self.logger.debug('Current speed = {}'.format(value))
 
     def speed_up(self):
-        if self.speed != 100:
+        if self.speed + self.speed_step <= self.max_duty_cycle:
             self.speed += self.speed_step
             self.set_speed(self.speed)
 
     def speed_down(self):
-        if self.speed != 0:
+        if self.speed - self.speed_step >= self.min_duty_cycle:
             self.speed -= self.speed_step
             self.set_speed(self.speed)
