@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "alphabot"
+version = "0.1.0"
+description = ""
+authors = ["Vitalii Viflinzider <megobonus666@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+"RPi.GPIO" = "^0.7.0"
+fastapi = "^0.54.1"
+uvicorn = "^0.11.3"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
