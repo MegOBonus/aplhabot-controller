@@ -9,6 +9,7 @@ python = "^3.7"
 "RPi.GPIO" = "^0.7.0"
 fastapi = "^0.54.1"
 uvicorn = "^0.11.3"
+picamera = "^1.13"
 
 [tool.poetry.dev-dependencies]
 
