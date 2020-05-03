@@ -4,7 +4,7 @@
         "port": 65432
     },
     "camera-stream":{
-        "host": "192.168.50.175",
+        "host": "0.0.0.0",
         "path": "/stream.mjpg",
         "port": 8000
     }
