@@ -1,8 +1,7 @@
 version: '3.7'
 services:
   server:
-    image: rpicontrol
-    build: .
+    image: camera-stream
     ports:
       - 80:8000
     devices:
